@@ -2,14 +2,25 @@
 const flexValues = [0.02, 0.15, 0.4, 0.65, 1, 1.5, 2.3, 4, 30];
 let counter = 4;
 
+// Getting reference to popups
+let intro = document.querySelector('.intro');
+let goodEnd = document.querySelector('.good-end');
+let badEnd = document.querySelector('.bad-end');
+
 // Getting reference to html nodes
+let body = document.querySelector(".body");
+
 let rock = document.querySelector('div.left img.rock');
 let paper = document.querySelector('div.left img.paper');
 let scissors = document.querySelector('div.left img.scissors');
 let computerChoiceDisplay = document.querySelector('.right img');
-let beam = document.querySelector('.beam')
+let beam = document.querySelector('.beam');
 let wizBeam = document.querySelector('.wiz-beam');
-let grimBeam = document.querySelector('.grim-beam')
+let grimBeam = document.querySelector('.grim-beam');
+
+// Getting reference to buttons
+let playBtn = document.querySelector('.intro button')
+let playAgain = document.querySelectorAll('.close-popup button')
 
 
 // Adding event listeners
@@ -24,6 +35,23 @@ paper.addEventListener('click', () => {
 scissors.addEventListener('click', () => {
     playRound('scisors');
 });
+
+playBtn.addEventListener('click', () => {
+    startGame();
+});
+
+playAgain.forEach(btn => {
+    btn.addEventListener('click', () => {
+        location.reload();
+    });
+});
+
+function startGame() {
+    intro.classList.toggle('close-popup');
+    intro.classList.toggle('open-popup');
+    
+    body.classList.toggle('close-popup');
+}
 
 function playRound(humanChoice) {
     let winner = null;
@@ -95,18 +123,30 @@ function updateGame(winner) {
         } else {
             counter--;
         }
+        
+        if (counter < 0 || counter > 8) {
+            quitGame(counter);
+        }
+        
         console.log(counter)
         wizBeam.style.flexGrow = flexValues[counter];
 
-    } else {
-        quitGame(counter);
-    }
+    } 
 }
 
 function quitGame(counter) {
     if (counter > 0) {
-        beam.removeChild(grimBeam); 
+        beam.removeChild(grimBeam);
+
+
+        goodEnd.classList.toggle('open-popup');
+        goodEnd.classList.toggle('close-popup');
     } else {
         beam.removeChild(wizBeam);
+
+        badEnd.classList.toggle('open-popup');
+        badEnd.classList.toggle('close-popup');
     }
+
+    body.classList.toggle('close-popup');
 }
