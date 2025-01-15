@@ -1,35 +1,33 @@
-// Declare variables for score
-let humanScore = 0;
-let computerScore = 0;
+// flex-grow factor array
+const flexValues = [0.02, 0.15, 0.4, 0.65, 1, 1.5, 2.3, 4, 30];
+let counter = 4;
 
-// Input user choice
-function getHumanChoice() {
-    let userChoice = prompt("Enter your choice");
-    return userChoice.toLowerCase();
-}
+// Getting reference to html nodes
+let rock = document.querySelector('div.left img.rock');
+let paper = document.querySelector('div.left img.paper');
+let scissors = document.querySelector('div.left img.scissors');
+let computerChoiceDisplay = document.querySelector('.right img');
+let beam = document.querySelector('.beam')
+let wizBeam = document.querySelector('.wiz-beam');
+let grimBeam = document.querySelector('.grim-beam')
 
 
-// Get computer's choice
-function getComputerChoice() {
-    let randomNumber = Math.floor(Math.random() * 3); // Random number generated from [0,3) and floored
-    switch (randomNumber) {
-        case 0:
-            return "rock";
-        case 1:
-            return "paper";
-        default:
-            return "scissor";
-    }
-}
+// Adding event listeners
+rock.addEventListener('click', () => {
+    playRound('rock');
+});
 
-// Play 1 round
-function printChoice(humanChoice, computerChoice) {
-    console.log(`Human: ${humanChoice} \t Computer: ${computerChoice}`);
-}
+paper.addEventListener('click', () => {
+    playRound('paper');
+});
 
-function playRound(humanChoice, computerChoice) {
+scissors.addEventListener('click', () => {
+    playRound('scisors');
+});
+
+function playRound(humanChoice) {
     let winner = null;
-    printChoice(humanChoice, computerChoice);
+    let computerChoice = getComputerChoice();
 
     if (humanChoice == "rock") {
         if (computerChoice == "rock") {
@@ -62,35 +60,53 @@ function playRound(humanChoice, computerChoice) {
     }
 
     if (winner) {
-        roundWin(winner);
+        updateGame(winner);
     }
 }
 
-// Print winner and increment score
-function printScore() {
-    console.log(`Human: ${humanScore} Computer: ${computerScore}`);
+function getComputerChoice() {
+    let randomNum = Math.floor(Math.random() * 3); // Gives 0, 1, 2 randomly
+    let choice;
+
+    switch(randomNum) {
+        case 0:
+            choice = 'rock';
+            break;
+        case 1:
+            choice = 'paper';
+            break;
+        case 2:
+            choice = 'scissors';
+            break;
+    }
+
+    computerChoiceDisplay.classList.remove(...computerChoiceDisplay.classList) // removes every class
+    computerChoiceDisplay.classList.add(`${choice}`)
+    computerChoiceDisplay.setAttribute('src', `./images/${choice}.png`);
+    computerChoiceDisplay.setAttribute('alt', `The computer chose ${choice}`);
+
+    return choice;
 }
 
-function roundWin(winner) {
-    if (winner == "human") {
-        humanScore++;
-    }
-    else {
-        computerScore++
-    }
-    console.log (`Winner: ${winner}`);
-    printScore();
-}
+function updateGame(winner) {
+    if (counter > -1 && counter < 9) {
+        if (winner == 'human') {
+            counter++;
+        } else {
+            counter--;
+        }
+        console.log(counter)
+        wizBeam.style.flexGrow = flexValues[counter];
 
-
-// Play game function
-function main() {
-    for (let i = 0; i < 5; i++) {
-        let humanChoice = getHumanChoice();
-        let computerChoice = getComputerChoice();
-        playRound(humanChoice, computerChoice);
+    } else {
+        quitGame(counter);
     }
 }
 
-// Game start
-main();
+function quitGame(counter) {
+    if (counter > 0) {
+        beam.removeChild(grimBeam); 
+    } else {
+        beam.removeChild(wizBeam);
+    }
+}
